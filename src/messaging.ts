@@ -15,18 +15,20 @@ export class Messaging {
         })
     }
 
-    getWorkspaces(): Promise<Group[]> {
-        return this.axios.get<Group[]>("groups", {
+    async getWorkspaces(): Promise<Group[]> {
+        const response = await this.axios.get<Group[]>("groups", {
             params: {
                 exists: {
                     owner: false
                 }
             }
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
-    getChannels(workspaceId: string): Promise<Group[]> {
-        return this.axios.get<Group[]>("groups", {
+    async getChannels(workspaceId: string): Promise<Group[]> {
+        const response = await this.axios.get<Group[]>("groups", {
             params: {
                 owner: {
                     id: workspaceId
@@ -35,11 +37,13 @@ export class Messaging {
                     name: true
                 }
             }
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
-    getDirectGroups(workspaceId: string): Promise<Group[]> {
-        return this.axios.get<Group[]>("groups", {
+    async getDirectGroups(workspaceId: string): Promise<Group[]> {
+        const response = await this.axios.get<Group[]>("groups", {
             params: {
                 owner: {
                     id: workspaceId
@@ -48,20 +52,23 @@ export class Messaging {
                     name: false
                 }
             }
-        }).then((response) => response.data);
+        });
+        return response.data;
     }
 
-    getEventStream(groupId: string): Promise<Event[]> {
-        return this.axios.get<Event[]>("events", {
+    async getEventStream(groupId: string): Promise<Event[]> {
+        const response = await this.axios.get<Event[]>("events", {
             params: {
                 eventGroup: {
                     id: groupId
                 }
             }
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
-    getGroupMemberships(selfOnly: boolean, groupId?: string): Promise<GroupMember[]> {
+    async getGroupMemberships(selfOnly: boolean, groupId?: string): Promise<GroupMember[]> {
         let params: GroupMember = {};
 
         if(groupId) {
@@ -74,9 +81,11 @@ export class Messaging {
                 id: this.userId
             }
         }
-        return this.axios.get<GroupMember[]>("groupMember", {
+        const response = await this.axios.get<GroupMember[]>("groupMember", {
             params: params
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
     async joinGroup(groupId: string): Promise<GroupMember> {
@@ -85,14 +94,16 @@ export class Messaging {
             return existingMembership;
         }
 
-        return this.axios.post<Event>("groupMember", {
+        const response = await this.axios.post<Event>("groupMember", {
             userGroup: {
                 id: groupId
             },
             user: {
                 id: this.userId
             }
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
     async leaveGroup(groupId: string): Promise<void> {
@@ -100,88 +111,96 @@ export class Messaging {
         if(existingMembership) {
             await this.axios.delete("groupMembership/" + existingMembership.id);
         }
-
-        return Promise.resolve();
     }
 
     async subscribeWithPusher(groupMemberId: string, eventTypes?: string[]): Promise<Subscription> {
-        const [existingSubscription]: Subscription[] = await this.axios.get<Subscription[]>("subscriptions", {
+        const [existingSubscription]: Subscription[] = (await this.axios.get<Subscription[]>("subscriptions", {
             params: {
                 groupMember: {
                     id: groupMemberId
                 },
                 transport: "pusher"
             }
-        }).then((response) => response.data);
+        })).data;
 
         if(existingSubscription) {
             //TODO: Patch existing types?
             return existingSubscription;
         }
 
-        return this.axios.post<Subscription>("subscriptions", {
+        const response = await this.axios.post<Subscription>("subscriptions", {
             groupMember: {
                 id: groupMemberId
             },
             transport: "pusher",
             eventTypes: eventTypes
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
     async subscribeWithWebhook(groupMemberId: string, webhookData: WebhookData, eventTypes?: string[]): Promise<Subscription> {
-        const [existingSubscription]: Subscription[] = await this.axios.get<Subscription[]>("subscriptions", {
+        const [existingSubscription]: Subscription[] = (await this.axios.get<Subscription[]>("subscriptions", {
             params: {
                 groupMember: {
                     id: groupMemberId
                 },
                 transport: "webhook"
             }
-        }).then((response) => response.data);
+        })).data;
 
         if(existingSubscription) {
             //TODO: Patch existing types/data?
             return existingSubscription;
         }
 
-        return this.axios.post<Subscription>("subscriptions", {
+        const response = await this.axios.post<Subscription>("subscriptions", {
             groupMember: {
                 id: groupMemberId
             },
             transport: "webhook",
             webhookData: webhookData,
             eventTypes: eventTypes
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
-    sendMessage(groupId: string, messageData: MessageEventData): Promise<Event> {
-        return this.axios.post<Event>("events", {
+    async sendMessage(groupId: string, messageData: MessageEventData): Promise<Event> {
+        const response = await this.axios.post<Event>("events", {
             eventGroup: {
                 id: groupId
             },
             type: "message",
             messageEventData: messageData
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
-    sendTextMessage(groupId: string, text: string): Promise<Event> {
-        return this.sendMessage(groupId, {text: text});
+    async sendTextMessage(groupId: string, text: string): Promise<Event> {
+        return await this.sendMessage(groupId, {text: text});
     }
 
-    startTyping(groupId: string): Promise<Event> {
-        return this.axios.post<Event>("events", {
+    async startTyping(groupId: string): Promise<Event> {
+        const response = await this.axios.post<Event>("events", {
             eventGroup: {
                 id: groupId
             },
             type: "typing-start",
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 
-    stopTyping(groupId: string): Promise<Event> {
-        return this.axios.post<Event>("events", {
+    async stopTyping(groupId: string): Promise<Event> {
+        const response = await this.axios.post<Event>("events", {
             eventGroup: {
                 id: groupId
             },
             type: "typing-stop",
-        }).then((response) => response.data);
+        });
+
+        return response.data;
     }
 }
