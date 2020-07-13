@@ -1,4 +1,4 @@
-import {Event, Group, GroupMember, MessageEventData, Subscription} from "./interfaces";
+import {Event, Group, GroupMember, MessageEventData, Subscription, WebhookData} from "./interfaces";
 import Axios, {AxiosInstance} from "axios";
 
 export class Messaging {
@@ -104,7 +104,7 @@ export class Messaging {
         return Promise.resolve();
     }
 
-    async subscribeToGroupWithPusher(groupMemberId: string, eventTypes?: string[]): Promise<Subscription> {
+    async subscribeWithPusher(groupMemberId: string, eventTypes?: string[]): Promise<Subscription> {
         const [existingSubscription]: Subscription[] = await this.axios.get<Subscription[]>("subscriptions", {
             params: {
                 groupMember: {
@@ -128,6 +128,31 @@ export class Messaging {
         }).then((response) => response.data);
     }
 
+    async subscribeWithWebhook(groupMemberId: string, webhookData: WebhookData, eventTypes?: string[]): Promise<Subscription> {
+        const [existingSubscription]: Subscription[] = await this.axios.get<Subscription[]>("subscriptions", {
+            params: {
+                groupMember: {
+                    id: groupMemberId
+                },
+                transport: "webhook"
+            }
+        }).then((response) => response.data);
+
+        if(existingSubscription) {
+            //TODO: Patch existing types/data?
+            return existingSubscription;
+        }
+
+        return this.axios.post<Subscription>("subscriptions", {
+            groupMember: {
+                id: groupMemberId
+            },
+            transport: "webhook",
+            webhookData: webhookData,
+            eventTypes: eventTypes
+        }).then((response) => response.data);
+    }
+
     sendMessage(groupId: string, messageData: MessageEventData): Promise<Event> {
         return this.axios.post<Event>("events", {
             eventGroup: {
@@ -140,5 +165,23 @@ export class Messaging {
 
     sendTextMessage(groupId: string, text: string): Promise<Event> {
         return this.sendMessage(groupId, {text: text});
+    }
+
+    startTyping(groupId: string): Promise<Event> {
+        return this.axios.post<Event>("events", {
+            eventGroup: {
+                id: groupId
+            },
+            type: "typing-start",
+        }).then((response) => response.data);
+    }
+
+    stopTyping(groupId: string): Promise<Event> {
+        return this.axios.post<Event>("events", {
+            eventGroup: {
+                id: groupId
+            },
+            type: "typing-stop",
+        }).then((response) => response.data);
     }
 }
