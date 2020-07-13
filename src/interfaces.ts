@@ -1,11 +1,19 @@
 export interface Event {
     type: string;
     eventGroup?: Group;
-    messageEventData?: any;
-    commandEventData?: any;
+    messageEventData?: MessageEventData;
+    commandEventData?: CommandEventData;
     readonly datetime?: Date;
     readonly user?: User;
     id?: string;
+}
+
+export interface MessageEventData {
+    text: string;
+}
+export interface CommandEventData {
+    command: string;
+    parameters: any
 }
 
 export interface Group {
@@ -27,8 +35,12 @@ export interface Subscription {
     transport: string;
     eventTypes?: string[];
     groupMember?: GroupMember;
-    webhookData?: any;
+    webhookData?: WebhookData;
     id?: string;
+}
+
+export interface WebhookData {
+    uri: string;
 }
 
 export interface User {
