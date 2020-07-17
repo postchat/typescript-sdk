@@ -18,9 +18,7 @@ export class Messaging {
   async getWorkspaces(): Promise<Group[]> {
     const response = await this.axios.get<Group[]>('groups', {
       params: {
-        exists: {
-          owner: false
-        }
+        'exists[owner]': false
       }
     });
 

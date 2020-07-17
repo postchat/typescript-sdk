@@ -58,9 +58,7 @@ var Messaging = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.axios.get('groups', {
                             params: {
-                                exists: {
-                                    owner: false
-                                }
+                                'exists[owner]': false
                             }
                         })];
                     case 1:
