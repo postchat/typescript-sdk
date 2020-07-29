@@ -3,7 +3,7 @@ import Axios, {AxiosInstance} from 'axios';
 
 export class Messaging {
   private readonly axios: AxiosInstance;
-  private readonly userId: string;
+  public readonly userId: string;
 
   constructor(accessToken: string, userId: string, baseUrl: string) {
     this.userId = userId;

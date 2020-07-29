@@ -1,7 +1,7 @@
 import { Event, Group, GroupMember, MessageEventData, Subscription, WebhookData } from './interfaces';
 export declare class Messaging {
     private readonly axios;
-    private readonly userId;
+    readonly userId: string;
     constructor(accessToken: string, userId: string, baseUrl: string);
     getWorkspaces(): Promise<Group[]>;
     getChannels(workspaceId: string): Promise<Group[]>;
