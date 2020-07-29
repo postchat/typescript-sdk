@@ -41,6 +41,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Messaging = void 0;
 var axios_1 = __importDefault(require("axios"));
+var auth0_1 = require("auth0");
 var Messaging = /** @class */ (function () {
     function Messaging(accessToken, userId, baseUrl) {
         this.userId = userId;
@@ -51,6 +52,39 @@ var Messaging = /** @class */ (function () {
             baseURL: baseUrl
         });
     }
+    Messaging.create = function (isBot, username, password) {
+        return __awaiter(this, void 0, void 0, function () {
+            var apiBaseUri, auth0Audience, auth0Domain, auth0UserConnection, auth0ClientId, authenticationClient, response, profile;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        apiBaseUri = "https://api-bhrsx2hg5q-uc.a.run.app/api/";
+                        auth0Audience = "https://api.getpostchat.com";
+                        auth0Domain = "postchat.us.auth0.com";
+                        auth0UserConnection = isBot ? "bots" : "Username-Password-Authentication";
+                        auth0ClientId = isBot ? "WHNPXkruRjkmEzWIwXedFJhCOx1x49VR" : "zT7txf5YZUBjS3iIuZxovfHl5LfcsEBr";
+                        authenticationClient = new auth0_1.AuthenticationClient({
+                            domain: auth0Domain,
+                            clientId: auth0ClientId
+                        });
+                        return [4 /*yield*/, authenticationClient.passwordGrant({
+                                username: username,
+                                password: password,
+                                // @ts-ignore The library accepts this and processes it, even though it's missing from the type.
+                                audience: auth0Audience,
+                                realm: auth0UserConnection,
+                                scope: "openid"
+                            })];
+                    case 1:
+                        response = _a.sent();
+                        return [4 /*yield*/, authenticationClient.getProfile(response.access_token)];
+                    case 2:
+                        profile = _a.sent();
+                        return [2 /*return*/, new Messaging(response.access_token, profile.sub, apiBaseUri)];
+                }
+            });
+        });
+    };
     Messaging.prototype.getWorkspaces = function () {
         return __awaiter(this, void 0, void 0, function () {
             var response;

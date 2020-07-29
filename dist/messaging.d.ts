@@ -3,6 +3,7 @@ export declare class Messaging {
     private readonly axios;
     readonly userId: string;
     constructor(accessToken: string, userId: string, baseUrl: string);
+    static create(isBot: boolean, username: string, password: string): Promise<Messaging>;
     getWorkspaces(): Promise<Group[]>;
     getChannels(workspaceId: string): Promise<Group[]>;
     getDirectGroups(workspaceId: string): Promise<Group[]>;

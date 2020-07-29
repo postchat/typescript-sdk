@@ -1,5 +1,6 @@
 import {Event, Group, GroupMember, MessageEventData, Subscription, WebhookData} from './interfaces';
 import Axios, {AxiosInstance} from 'axios';
+import {AuthenticationClient} from 'auth0';
 
 export class Messaging {
   private readonly axios: AxiosInstance;
@@ -13,6 +14,32 @@ export class Messaging {
       },
       baseURL: baseUrl
     })
+  }
+
+  static async create(isBot: boolean, username: string, password: string): Promise<Messaging> {
+    const apiBaseUri =          "https://api-bhrsx2hg5q-uc.a.run.app/api/";
+    const auth0Audience =       "https://api.getpostchat.com";
+    const auth0Domain =         "postchat.us.auth0.com";
+    const auth0UserConnection = isBot ? "bots" : "Username-Password-Authentication";
+    const auth0ClientId =       isBot ? "WHNPXkruRjkmEzWIwXedFJhCOx1x49VR" : "zT7txf5YZUBjS3iIuZxovfHl5LfcsEBr";
+
+    const authenticationClient = new AuthenticationClient({
+      domain: auth0Domain,
+      clientId: auth0ClientId
+    });
+
+    const response = await authenticationClient.passwordGrant({
+      username: username,
+      password: password,
+      // @ts-ignore The library accepts this and processes it, even though it's missing from the type.
+      audience: auth0Audience,
+      realm: auth0UserConnection,
+      scope: "openid"
+    });
+
+    const profile = await authenticationClient.getProfile(response.access_token);
+
+    return new Messaging(response.access_token, profile.sub, apiBaseUri);
   }
 
   async getWorkspaces(): Promise<Group[]> {
