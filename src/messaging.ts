@@ -52,6 +52,18 @@ export class Messaging {
     return response.data;
   }
 
+  async getAllChildren(workspaceId: string): Promise<Group[]> {
+    const response = await this.axios.get<Group[]>('groups', {
+      params: {
+        owner: {
+          id: workspaceId
+        }
+      }
+    });
+
+    return response.data;
+  }
+
   async getChannels(workspaceId: string): Promise<Group[]> {
     const response = await this.axios.get<Group[]>('groups', {
       params: {
@@ -189,6 +201,10 @@ export class Messaging {
     });
 
     return response.data;
+  }
+
+  async subscribeWithWebhookUri(groupMemberId: string, webhookUri: string, eventTypes?: string[]): Promise<Subscription> {
+    return await this.subscribeWithWebhook(groupMemberId, {uri: webhookUri}, eventTypes);
   }
 
   async sendMessage(groupId: string, messageData: MessageEventData): Promise<Event> {

@@ -102,6 +102,25 @@ var Messaging = /** @class */ (function () {
             });
         });
     };
+    Messaging.prototype.getAllChildren = function (workspaceId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.axios.get('groups', {
+                            params: {
+                                owner: {
+                                    id: workspaceId
+                                }
+                            }
+                        })];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response.data];
+                }
+            });
+        });
+    };
     Messaging.prototype.getChannels = function (workspaceId) {
         return __awaiter(this, void 0, void 0, function () {
             var response;
@@ -299,6 +318,16 @@ var Messaging = /** @class */ (function () {
                     case 2:
                         response = _a.sent();
                         return [2 /*return*/, response.data];
+                }
+            });
+        });
+    };
+    Messaging.prototype.subscribeWithWebhookUri = function (groupMemberId, webhookUri, eventTypes) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.subscribeWithWebhook(groupMemberId, { uri: webhookUri }, eventTypes)];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });

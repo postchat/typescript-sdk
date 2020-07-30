@@ -5,6 +5,7 @@ export declare class Messaging {
     constructor(accessToken: string, userId: string, baseUrl: string);
     static create(isBot: boolean, username: string, password: string): Promise<Messaging>;
     getWorkspaces(): Promise<Group[]>;
+    getAllChildren(workspaceId: string): Promise<Group[]>;
     getChannels(workspaceId: string): Promise<Group[]>;
     getDirectGroups(workspaceId: string): Promise<Group[]>;
     getEventStream(groupId: string): Promise<Event[]>;
@@ -13,6 +14,7 @@ export declare class Messaging {
     leaveGroup(groupId: string): Promise<void>;
     subscribeWithPusher(groupMemberId: string, eventTypes?: string[]): Promise<Subscription>;
     subscribeWithWebhook(groupMemberId: string, webhookData: WebhookData, eventTypes?: string[]): Promise<Subscription>;
+    subscribeWithWebhookUri(groupMemberId: string, webhookUri: string, eventTypes?: string[]): Promise<Subscription>;
     sendMessage(groupId: string, messageData: MessageEventData): Promise<Event>;
     sendTextMessage(groupId: string, text: string): Promise<Event>;
     startTyping(groupId: string): Promise<Event>;
