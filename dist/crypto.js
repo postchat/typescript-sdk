@@ -22,10 +22,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifySignature = void 0;
 var crypto = __importStar(require("crypto"));
 function verifySignature(publicKey, signature, requestBody, webhookUri) {
-    var verifier = crypto.createVerify("RSA-SHA256");
-    verifier.write(requestBody + "." + webhookUri, "utf8");
+    var verifier = crypto.createVerify('RSA-SHA256');
+    verifier.write(requestBody + '.' + webhookUri, 'utf8');
     verifier.end();
-    return verifier.verify(publicKey, signature, "base64");
+    return verifier.verify(publicKey, signature, 'base64');
 }
 exports.verifySignature = verifySignature;
 //# sourceMappingURL=crypto.js.map

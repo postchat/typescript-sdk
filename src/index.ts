@@ -1,3 +1,3 @@
-export * from './interfaces'
-export * from './messaging'
-export * from './crypto'
+export * from './interfaces';
+export * from './postChat';
+export * from './crypto';
