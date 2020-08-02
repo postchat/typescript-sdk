@@ -3,6 +3,7 @@ export declare class PostChat {
     private readonly axios;
     readonly userId: string;
     constructor(accessToken: string, baseUrl?: string);
+    refreshToken(accessToken: string): void;
     static create(username: string, password: string, isBot: boolean): Promise<PostChat>;
     /** Fetches the current user's available workspaces */
     getWorkspaces(): Promise<Group[]>;

@@ -66,6 +66,9 @@ var PostChat = /** @class */ (function () {
             baseURL: baseUrl
         });
     }
+    PostChat.prototype.refreshToken = function (accessToken) {
+        this.axios.defaults.headers['Authorization'] = 'Bearer ' + accessToken;
+    };
     PostChat.create = function (username, password, isBot) {
         return __awaiter(this, void 0, void 0, function () {
             var apiBaseUri, auth0Audience, auth0Domain, auth0UserConnection, auth0ClientId, authenticationClient, response;

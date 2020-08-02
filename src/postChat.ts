@@ -31,6 +31,10 @@ export class PostChat {
     });
   }
 
+  public refreshToken(accessToken: string) {
+    this.axios.defaults.headers['Authorization'] = 'Bearer ' + accessToken;
+  }
+
   static async create(username: string, password: string, isBot: boolean) {
     const apiBaseUri =          'https://api-bhrsx2hg5q-uc.a.run.app/api/';
     const auth0Audience =       'https://api.getpostchat.com';

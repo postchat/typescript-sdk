@@ -1,7 +1,7 @@
 {
   "name": "@postchat/postchat-apis",
-  "version": "1.2.0",
-  "description": "```javascript import { PostChat } from 'postchat';",
+  "version": "1.2.1",
+  "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
