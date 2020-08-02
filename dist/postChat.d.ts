@@ -1,4 +1,4 @@
-import { Event, Group, GroupMember, MessageEvent, Subscription, Thread } from './interfaces';
+import { Event, Group, GroupMember, MessageEvent, Subscription, Thread, Workspace } from './interfaces';
 export declare class PostChat {
     private readonly axios;
     readonly userId: string;
@@ -6,7 +6,7 @@ export declare class PostChat {
     refreshToken(accessToken: string): void;
     static create(username: string, password: string, isBot: boolean): Promise<PostChat>;
     /** Fetches the current user's available workspaces */
-    getWorkspaces(): Promise<Group[]>;
+    getWorkspaces(): Promise<Workspace[]>;
     /** Fetches child groups of the specified group */
     getGroupChildren(groupId: string): Promise<Group[]>;
     /** Fetches available threads of a workspaces */

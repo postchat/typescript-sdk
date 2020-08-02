@@ -60,7 +60,7 @@ export class PostChat {
   }
 
   /** Fetches the current user's available workspaces */
-  public async getWorkspaces(): Promise<Group[]> {
+  public async getWorkspaces(): Promise<Workspace[]> {
     const response = await this.axios.get<Workspace[]>('groups', {
       params: {
         'exists[owner]': false
