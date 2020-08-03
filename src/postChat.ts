@@ -9,6 +9,7 @@ import {
   MessageEvent,
   Subscription,
   Thread,
+  User,
   WebhookData,
   Workspace
 } from './interfaces';
@@ -277,5 +278,12 @@ export class PostChat {
   /** Send a typing indication to the specified group */
   public async sendTypingEvent(groupId: string, type: 'typing-start' | 'typing-stop') {
     return this.sendEvent(groupId, type);
+  }
+
+  /** Fetches user information based on the user id */
+  public async getUserInfo(userId: string): Promise<User> {
+    const response = await this.axios.get('users/' + userId);
+
+    return response.data;
   }
 }

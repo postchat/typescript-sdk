@@ -1,4 +1,4 @@
-import { Event, Group, GroupMember, MessageEvent, Subscription, Thread, Workspace } from './interfaces';
+import { Event, Group, GroupMember, MessageEvent, Subscription, Thread, User, Workspace } from './interfaces';
 export declare class PostChat {
     private readonly axios;
     readonly userId: string;
@@ -34,4 +34,6 @@ export declare class PostChat {
     sendMessage(groupId: string, text: string): Promise<MessageEvent>;
     /** Send a typing indication to the specified group */
     sendTypingEvent(groupId: string, type: 'typing-start' | 'typing-stop'): Promise<any>;
+    /** Fetches user information based on the user id */
+    getUserInfo(userId: string): Promise<User>;
 }
