@@ -6,5 +6,5 @@ interface MessageEventData {
 
 export interface MessageEvent extends Event {
   messageEventData: MessageEventData;
-  text: 'message';
+  type: 'message';
 }
