@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./events/commandEvent"), exports);
 __exportStar(require("./events/event"), exports);
 __exportStar(require("./events/messageEvent"), exports);
+__exportStar(require("./events/userJoinedEvent"), exports);
 __exportStar(require("./groups/group"), exports);
 __exportStar(require("./groups/groupMember"), exports);
 __exportStar(require("./groups/thread"), exports);
