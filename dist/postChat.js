@@ -419,6 +419,20 @@ var PostChat = /** @class */ (function () {
             });
         });
     };
+    /** Fetches users available to the current user */
+    PostChat.prototype.getUsers = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.axios.get('users')];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response.data];
+                }
+            });
+        });
+    };
     return PostChat;
 }());
 exports.PostChat = PostChat;

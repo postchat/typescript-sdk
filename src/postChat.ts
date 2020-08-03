@@ -286,4 +286,11 @@ export class PostChat {
 
     return response.data;
   }
+
+  /** Fetches users available to the current user */
+  public async getUsers(): Promise<User[]> {
+    const response = await this.axios.get('users');
+
+    return response.data;
+  }
 }

@@ -36,4 +36,6 @@ export declare class PostChat {
     sendTypingEvent(groupId: string, type: 'typing-start' | 'typing-stop'): Promise<any>;
     /** Fetches user information based on the user id */
     getUserInfo(userId: string): Promise<User>;
+    /** Fetches users available to the current user */
+    getUsers(): Promise<User[]>;
 }
