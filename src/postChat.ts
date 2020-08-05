@@ -103,6 +103,7 @@ export class PostChat {
     const fetchThreadMemberships = response.data.map(async (thread) => {
       const groupMembership = await this.getGroupMemberships(thread.id);
       thread.groupMembers = groupMembership;
+      thread.type = thread.name.length === 0 ? 'direct' : 'global';
 
       return thread;
     });

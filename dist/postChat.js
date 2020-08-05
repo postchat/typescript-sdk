@@ -171,6 +171,7 @@ var PostChat = /** @class */ (function () {
                                     case 1:
                                         groupMembership = _a.sent();
                                         thread.groupMembers = groupMembership;
+                                        thread.type = thread.name.length === 0 ? 'direct' : 'global';
                                         return [2 /*return*/, thread];
                                 }
                             });
