@@ -196,6 +196,20 @@ var PostChat = /** @class */ (function () {
             });
         });
     };
+    /** Fetches thread by id */
+    PostChat.prototype.getThreadById = function (threadId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.axios.get('/groups/' + threadId)];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response.data];
+                }
+            });
+        });
+    };
     PostChat.prototype.createGroup = function (ownerId, name, description, discoverable) {
         return __awaiter(this, void 0, void 0, function () {
             var response;

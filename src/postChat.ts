@@ -118,6 +118,13 @@ export class PostChat {
     return threads.filter((thread) => thread.groupMembers.find((value) => value.user.id === this.userId));
   }
 
+  /** Fetches thread by id */
+  public async getThreadById(threadId: string): Promise<Thread> {
+    const response = await this.axios.get('/groups/' + threadId);
+
+    return response.data;
+  }
+
   private async createGroup(
     ownerId: string,
     name: string,
