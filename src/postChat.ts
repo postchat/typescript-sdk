@@ -115,7 +115,7 @@ export class PostChat {
   public async getCurrentUserThreads(workspaceId: string, direct?: boolean): Promise<Thread[]> {
     const threads = await this.getThreads(workspaceId, direct);
 
-    return threads.filter((thread) => thread.groupMembers.find((value) => value.id === this.userId));
+    return threads.filter((thread) => thread.groupMembers.find((value) => value.user.id === this.userId));
   }
 
   private async createGroup(
