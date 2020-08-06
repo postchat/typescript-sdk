@@ -272,7 +272,7 @@ var PostChat = /** @class */ (function () {
                         if (existingMembership) {
                             throw new Error('The user is already an member of that group');
                         }
-                        return [4 /*yield*/, this.axios.post('groupMember', {
+                        return [4 /*yield*/, this.axios.post('groupMembers', {
                                 userGroup: {
                                     id: groupId
                                 },
@@ -299,7 +299,7 @@ var PostChat = /** @class */ (function () {
                     case 1:
                         existingMembership = (_a.sent())[0];
                         if (!existingMembership) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.axios.delete('groupMembership/' + existingMembership.id)];
+                        return [4 /*yield*/, this.axios.delete('groupMembers/' + existingMembership.id)];
                     case 2:
                         _a.sent();
                         _a.label = 3;

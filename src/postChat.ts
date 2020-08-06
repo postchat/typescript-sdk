@@ -170,7 +170,7 @@ export class PostChat {
       throw new Error('The user is already an member of that group');
     }
 
-    const response = await this.axios.post<GroupMember>('groupMember', {
+    const response = await this.axios.post<GroupMember>('groupMembers', {
       userGroup: {
         id: groupId
       },
@@ -187,7 +187,7 @@ export class PostChat {
     try {
       const [existingMembership] = await this.getGroupMemberships(groupId, this.userId);
       if (existingMembership) {
-        await this.axios.delete('groupMembership/' + existingMembership.id);
+        await this.axios.delete('groupMembers/' + existingMembership.id);
       }
 
       return true;
