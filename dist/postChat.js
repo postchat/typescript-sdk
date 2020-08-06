@@ -191,7 +191,7 @@ var PostChat = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.getThreads(workspaceId, direct)];
                     case 1:
                         threads = _a.sent();
-                        return [2 /*return*/, threads.filter(function (thread) { return thread.groupMembers.find(function (value) { return value.id === _this.userId; }); })];
+                        return [2 /*return*/, threads.filter(function (thread) { return thread.groupMembers.find(function (value) { return value.user.id === _this.userId; }); })];
                 }
             });
         });
