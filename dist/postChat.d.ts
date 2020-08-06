@@ -11,6 +11,8 @@ export declare class PostChat {
     getGroupChildren(groupId: string): Promise<Group[]>;
     /** Fetches available threads of a workspaces */
     getThreads(workspaceId: string, direct?: boolean): Promise<Thread[]>;
+    /** Fetches threads that the current user is a member of */
+    getCurrentUserThreads(workspaceId: string, direct?: boolean): Promise<Thread[]>;
     private createGroup;
     /** Creates a new thread */
     createThread(ownerId: string, name: string, description?: string, discoverable?: boolean): Promise<Group>;
