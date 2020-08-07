@@ -199,13 +199,19 @@ var PostChat = /** @class */ (function () {
     /** Fetches thread by id */
     PostChat.prototype.getThreadById = function (threadId) {
         return __awaiter(this, void 0, void 0, function () {
-            var response;
+            var response, thread, groupMemberships;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.axios.get('/groups/' + threadId)];
                     case 1:
                         response = _a.sent();
-                        return [2 /*return*/, response.data];
+                        thread = response.data;
+                        return [4 /*yield*/, this.getGroupMemberships(threadId)];
+                    case 2:
+                        groupMemberships = _a.sent();
+                        thread.groupMembers = groupMemberships;
+                        thread.type = thread.name.length === 0 ? 'direct' : 'global';
+                        return [2 /*return*/, thread];
                 }
             });
         });
@@ -284,7 +290,7 @@ var PostChat = /** @class */ (function () {
                     case 1:
                         existingMembership = (_a.sent())[0];
                         if (existingMembership) {
-                            throw new Error('The user is already an member of that group');
+                            return [2 /*return*/, existingMembership];
                         }
                         return [4 /*yield*/, this.axios.post('groupMembers', {
                                 userGroup: {

@@ -121,8 +121,13 @@ export class PostChat {
   /** Fetches thread by id */
   public async getThreadById(threadId: string): Promise<Thread> {
     const response = await this.axios.get('/groups/' + threadId);
+    const thread = response.data;
 
-    return response.data;
+    const groupMemberships = await this.getGroupMemberships(threadId);
+    thread.groupMembers = groupMemberships;
+    thread.type = thread.name.length === 0 ? 'direct' : 'global';
+
+    return thread;
   }
 
   private async createGroup(
@@ -174,7 +179,7 @@ export class PostChat {
   public async joinGroup(groupId: string, userId: string): Promise<GroupMember> {
     const [existingMembership] = await this.getGroupMemberships(groupId, this.userId);
     if (existingMembership) {
-      throw new Error('The user is already an member of that group');
+      return existingMembership;
     }
 
     const response = await this.axios.post<GroupMember>('groupMembers', {
