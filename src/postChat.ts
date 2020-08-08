@@ -150,7 +150,7 @@ export class PostChat {
 
   /** Creates a new thread */
   public async createThread(ownerId: string, name: string, description: string = '', discoverable: boolean = true) {
-    const createdGroup = await this.createGroup(name, ownerId, description, discoverable);
+    const createdGroup = await this.createGroup(ownerId, name, description, discoverable);
     await this.joinGroup(createdGroup.id, this.userId);
 
     return this.getThreadById(createdGroup.id);

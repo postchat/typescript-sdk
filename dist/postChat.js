@@ -244,7 +244,7 @@ var PostChat = /** @class */ (function () {
             var createdGroup;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.createGroup(name, ownerId, description, discoverable)];
+                    case 0: return [4 /*yield*/, this.createGroup(ownerId, name, description, discoverable)];
                     case 1:
                         createdGroup = _a.sent();
                         return [4 /*yield*/, this.joinGroup(createdGroup.id, this.userId)];
