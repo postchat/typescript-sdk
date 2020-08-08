@@ -17,7 +17,7 @@ export declare class PostChat {
     getThreadById(threadId: string): Promise<Thread>;
     private createGroup;
     /** Creates a new thread */
-    createThread(ownerId: string, name: string, description?: string, discoverable?: boolean): Promise<Group>;
+    createThread(ownerId: string, name: string, description?: string, discoverable?: boolean): Promise<Thread>;
     /** Fetches the event stream of a group */
     getEventStream(groupId: string): Promise<Event[]>;
     /** Fetches group memberships for the specified group */

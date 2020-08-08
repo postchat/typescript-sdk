@@ -241,8 +241,17 @@ var PostChat = /** @class */ (function () {
         if (description === void 0) { description = ''; }
         if (discoverable === void 0) { discoverable = true; }
         return __awaiter(this, void 0, void 0, function () {
+            var createdGroup;
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.createGroup(name, ownerId, description, discoverable)];
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.createGroup(name, ownerId, description, discoverable)];
+                    case 1:
+                        createdGroup = _a.sent();
+                        return [4 /*yield*/, this.joinGroup(createdGroup.id, this.userId)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, this.getThreadById(createdGroup.id)];
+                }
             });
         });
     };
@@ -302,6 +311,9 @@ var PostChat = /** @class */ (function () {
                             })];
                     case 2:
                         response = _a.sent();
+                        return [4 /*yield*/, this.subscribeWithPusher(response.data.id, [])];
+                    case 3:
+                        _a.sent();
                         return [2 /*return*/, response.data];
                 }
             });

@@ -150,7 +150,10 @@ export class PostChat {
 
   /** Creates a new thread */
   public async createThread(ownerId: string, name: string, description: string = '', discoverable: boolean = true) {
-    return this.createGroup(name, ownerId, description, discoverable);
+    const createdGroup = await this.createGroup(name, ownerId, description, discoverable);
+    await this.joinGroup(createdGroup.id, this.userId);
+
+    return this.getThreadById(createdGroup.id);
   }
 
   /** Fetches the event stream of a group */
@@ -191,6 +194,7 @@ export class PostChat {
       }
     });
 
+    await this.subscribeWithPusher(response.data.id, []);
     return response.data;
   }
 
