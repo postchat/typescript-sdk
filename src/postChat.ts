@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 
 import {
   Event,
-  Group,
-  GroupMember,
+  Stream,
+  StreamUser,
   MessageEvent,
   Subscription,
   Thread,
@@ -62,7 +62,7 @@ export class PostChat {
 
   /** Fetches the current user's available workspaces */
   public async getWorkspaces(): Promise<Workspace[]> {
-    const response = await this.axios.get<Workspace[]>('groups', {
+    const response = await this.axios.get<Workspace[]>('streams', {
       params: {
         'exists[owner]': false
       }
@@ -70,8 +70,7 @@ export class PostChat {
 
     // TODO: We'll probably need to watch performance
     const fetchWorkspaceMemberships = response.data.map(async (workspace) => {
-      const groupMembership = await this.getGroupMemberships(workspace.id);
-      workspace.groupMembers = groupMembership;
+      workspace.streamUsers = await this.getStreamUsers(workspace.id);
 
       return workspace;
     });
@@ -79,11 +78,11 @@ export class PostChat {
     return Promise.all(fetchWorkspaceMemberships);
   }
 
-  /** Fetches child groups of the specified group */
-  public async getGroupChildren(groupId: string): Promise<Group[]> {
-    const response = await this.axios.get<Group[]>('groups', {
+  /** Fetches child streams of the specified stream */
+  public async getStreamChildren(streamId: string): Promise<Stream[]> {
+    const response = await this.axios.get<Stream[]>('streams', {
       params: {
-        'owner.id': groupId
+        'owner.id': streamId
       }
     });
 
@@ -92,7 +91,7 @@ export class PostChat {
 
   /** Fetches available threads of a workspaces */
   public async getThreads(workspaceId: string, direct?: boolean): Promise<Thread[]> {
-    const response = await this.axios.get<Thread[]>('groups', {
+    const response = await this.axios.get<Thread[]>('streams', {
       params: {
         'owner.id': workspaceId,
         'exists.name': !direct
@@ -101,8 +100,7 @@ export class PostChat {
 
     // TODO: We'll probably need to watch performance
     const fetchThreadMemberships = response.data.map(async (thread) => {
-      const groupMembership = await this.getGroupMemberships(thread.id);
-      thread.groupMembers = groupMembership;
+      thread.streamUsers = await this.getStreamUsers(thread.id);
       thread.type = thread.name.length === 0 ? 'direct' : 'global';
 
       return thread;
@@ -115,28 +113,27 @@ export class PostChat {
   public async getCurrentUserThreads(workspaceId: string, direct?: boolean): Promise<Thread[]> {
     const threads = await this.getThreads(workspaceId, direct);
 
-    return threads.filter((thread) => thread.groupMembers.find((value) => value.user.id === this.userId));
+    return threads.filter((thread) => thread.streamUsers.find((value) => value.user.id === this.userId));
   }
 
   /** Fetches thread by id */
   public async getThreadById(threadId: string): Promise<Thread> {
-    const response = await this.axios.get('/groups/' + threadId);
+    const response = await this.axios.get('streams/' + threadId);
     const thread = response.data;
 
-    const groupMemberships = await this.getGroupMemberships(threadId);
-    thread.groupMembers = groupMemberships;
+    thread.streamUsers = await this.getStreamUsers(threadId);
     thread.type = thread.name.length === 0 ? 'direct' : 'global';
 
     return thread;
   }
 
-  private async createGroup(
+  private async createStream(
     ownerId: string,
     name: string,
     description: string,
     discoverable: boolean
-  ): Promise<Group> {
-    const response = await this.axios.post<Group>('groups', {
+  ): Promise<Stream> {
+    const response = await this.axios.post<Stream>('streams', {
       name: name,
       description: description,
       discoverable: discoverable,
@@ -150,26 +147,26 @@ export class PostChat {
 
   /** Creates a new thread */
   public async createThread(ownerId: string, name: string, description: string = '', discoverable: boolean = true) {
-    const createdGroup = await this.createGroup(ownerId, name, description, discoverable);
-    await this.joinGroup(createdGroup.id, this.userId);
+    const createdStream = await this.createStream(ownerId, name, description, discoverable);
+    await this.joinStream(createdStream.id, this.userId);
 
-    return this.getThreadById(createdGroup.id);
+    return this.getThreadById(createdStream.id);
   }
 
-  /** Fetches the event stream of a group */
-  public async getEventStream(groupId: string): Promise<Event[]> {
+  /** Fetches the event stream of a stream */
+  public async getEventStream(streamId: string): Promise<Event[]> {
     const response = await this.axios.get<Event[]>('events', {
       params: {
-        'eventGroup.id': groupId
+        'stream.id': streamId
       }
     });
 
     return response.data;
   }
 
-  /** Fetches group memberships for the specified group */
-  public async getGroupMemberships(groupId: string, userId?: string): Promise<GroupMember[]> {
-    const response = await this.axios.get<GroupMember[]>(`groups/${groupId}/groupMembers`, {
+  /** Fetches stream memberships for the specified stream */
+  public async getStreamUsers(streamId: string, userId?: string): Promise<StreamUser[]> {
+    const response = await this.axios.get<StreamUser[]>(`streamUsers/${streamId}/streamUsers`, {
       params: {
         ...userId && { 'user.id': userId }
       }
@@ -178,32 +175,34 @@ export class PostChat {
     return response.data;
   }
 
-  /** Joins a group if available */
-  public async joinGroup(groupId: string, userId: string): Promise<GroupMember> {
-    const [existingMembership] = await this.getGroupMemberships(groupId, this.userId);
+  /** Joins a stream if available */
+  public async joinStream(streamId: string, userId: string, pusherSubscribe: boolean = true): Promise<StreamUser> {
+    const [existingMembership] = await this.getStreamUsers(streamId, this.userId);
     if (existingMembership) {
       return existingMembership;
     }
 
-    const response = await this.axios.post<GroupMember>('groupMembers', {
-      userGroup: {
-        id: groupId
+    const response = await this.axios.post<StreamUser>('streamUsers', {
+      stream: {
+        id: streamId
       },
       user: {
         id: userId
       }
     });
 
-    await this.subscribeWithPusher(response.data.id, []);
+    if(pusherSubscribe) {
+      await this.subscribeWithPusher(response.data.id, []);
+    }
     return response.data;
   }
 
-  /** Leaves a group */
-  public async leaveGroup(groupId: string): Promise<boolean> {
+  /** Leaves a stream */
+  public async leaveStream(streamId: string): Promise<boolean> {
     try {
-      const [existingMembership] = await this.getGroupMemberships(groupId, this.userId);
+      const [existingMembership] = await this.getStreamUsers(streamId, this.userId);
       if (existingMembership) {
-        await this.axios.delete('groupMembers/' + existingMembership.id);
+        await this.axios.delete('streamUsers/' + existingMembership.id);
       }
 
       return true;
@@ -214,10 +213,10 @@ export class PostChat {
   }
 
   /** Subscribes to pusher transport */
-  public async subscribeWithPusher(groupMemberId: string, eventTypes?: string[]): Promise<Subscription> {
+  public async subscribeWithPusher(streamUserId: string, eventTypes?: string[]): Promise<Subscription> {
     const [existingSubscription]: Subscription[] = (await this.axios.get<Subscription[]>('subscriptions', {
       params: {
-        'groupMember.id': groupMemberId,
+        'streamUser.id': streamUserId,
         transport: 'pusher'
       }
     })).data;
@@ -228,8 +227,8 @@ export class PostChat {
     }
 
     const response = await this.axios.post<Subscription>('subscriptions', {
-      groupMember: {
-        id: groupMemberId
+      streamUser: {
+        id: streamUserId
       },
       transport: 'pusher',
       eventTypes: eventTypes
@@ -240,13 +239,13 @@ export class PostChat {
 
   /** Subscribes to webhook transport */
   private async subscribeWithWebhook(
-    groupMemberId: string,
+    streamUserId: string,
     webhookData: WebhookData,
     eventTypes?: string[]
   ): Promise<Subscription> {
     const [existingSubscription]: Subscription[] = (await this.axios.get<Subscription[]>('subscriptions', {
       params: {
-        'groupMember.id': groupMemberId,
+        'streamUser.id': streamUserId,
         transport: 'webhook'
       }
     })).data;
@@ -257,8 +256,8 @@ export class PostChat {
     }
 
     const response = await this.axios.post<Subscription>('subscriptions', {
-      groupMember: {
-        id: groupMemberId
+      streamUser: {
+        id: streamUserId
       },
       transport: 'webhook',
       webhookData: webhookData,
@@ -270,18 +269,18 @@ export class PostChat {
 
   /** Subscribes to webhook transport with the specified uri */
   public async subscribeWithWebhookUri(
-    groupMemberId: string,
+    streamUserId: string,
     webhookUri: string,
     eventTypes?: string[]
   ): Promise<Subscription> {
-    return this.subscribeWithWebhook(groupMemberId, {uri: webhookUri}, eventTypes);
+    return this.subscribeWithWebhook(streamUserId, {uri: webhookUri}, eventTypes);
   }
 
-  /** sends an event to the group's event stream */
-  public async sendEvent<T = any>(groupId: string, type: string, data?: any): Promise<T> {
+  /** sends an event to the stream's event stream */
+  public async sendEvent<T = any>(streamId: string, type: string, data?: any): Promise<T> {
     const response = await this.axios.post('events', {
-      eventGroup: {
-        id: groupId
+      stream: {
+        id: streamId
       },
       type: type,
       ...data && data
@@ -290,18 +289,19 @@ export class PostChat {
     return response.data;
   }
 
-  /** Send a message to the specified group */
-  public async sendMessage(groupId: string, text: string): Promise<MessageEvent> {
-    return this.sendEvent<MessageEvent>(groupId, 'message', {
+  /** Send a message to the specified stream */
+  public async sendMessage(streamId: string, text: string): Promise<MessageEvent> {
+    return this.sendEvent<MessageEvent>(streamId, 'message', {
       messageEventData: {
         text: text
       }
     });
   }
 
-  /** Send a typing indication to the specified group */
-  public async sendTypingEvent(groupId: string, type: 'typing-start' | 'typing-stop') {
-    return this.sendEvent(groupId, type);
+  /** Send a typing indication to the specified stream */
+  /** Send a typing indication to the specified stream */
+  public async sendTypingEvent(streamId: string, type: 'typing-start' | 'typing-stop') {
+    return this.sendEvent(streamId, type);
   }
 
   /** Fetches user information based on the user id */

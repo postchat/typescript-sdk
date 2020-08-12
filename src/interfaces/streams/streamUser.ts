@@ -1,10 +1,10 @@
 import { Event } from '../events/event';
 import { User } from '../user';
-import { Group } from './group';
+import { Stream } from './stream';
 
-export interface GroupMember {
+export interface StreamUser {
   id: string;
   user: User;
-  userGroup: Group;
+  stream: Stream;
   lastSeenEvent?: Event;
 }

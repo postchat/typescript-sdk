@@ -1,9 +1,9 @@
-import { Group } from '../groups/group';
+import { Stream } from '../streams/stream';
 import { User } from '../user';
 
 export interface Event {
   type: string;
-  eventGroup?: Pick<Group, 'id'>;
+  stream?: Pick<Stream, 'id'>;
   readonly datetime?: Date;
   readonly user?: User;
   id?: string;

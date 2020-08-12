@@ -106,7 +106,7 @@ var PostChat = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.axios.get('groups', {
+                    case 0: return [4 /*yield*/, this.axios.get('streams', {
                             params: {
                                 'exists[owner]': false
                             }
@@ -114,13 +114,14 @@ var PostChat = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         fetchWorkspaceMemberships = response.data.map(function (workspace) { return __awaiter(_this, void 0, void 0, function () {
-                            var groupMembership;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, this.getGroupMemberships(workspace.id)];
+                            var _a;
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
+                                    case 0:
+                                        _a = workspace;
+                                        return [4 /*yield*/, this.getStreamUsers(workspace.id)];
                                     case 1:
-                                        groupMembership = _a.sent();
-                                        workspace.groupMembers = groupMembership;
+                                        _a.streamUsers = _b.sent();
                                         return [2 /*return*/, workspace];
                                 }
                             });
@@ -130,15 +131,15 @@ var PostChat = /** @class */ (function () {
             });
         });
     };
-    /** Fetches child groups of the specified group */
-    PostChat.prototype.getGroupChildren = function (groupId) {
+    /** Fetches child streams of the specified stream */
+    PostChat.prototype.getStreamChildren = function (streamId) {
         return __awaiter(this, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.axios.get('groups', {
+                    case 0: return [4 /*yield*/, this.axios.get('streams', {
                             params: {
-                                'owner.id': groupId
+                                'owner.id': streamId
                             }
                         })];
                     case 1:
@@ -155,7 +156,7 @@ var PostChat = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.axios.get('groups', {
+                    case 0: return [4 /*yield*/, this.axios.get('streams', {
                             params: {
                                 'owner.id': workspaceId,
                                 'exists.name': !direct
@@ -164,13 +165,14 @@ var PostChat = /** @class */ (function () {
                     case 1:
                         response = _a.sent();
                         fetchThreadMemberships = response.data.map(function (thread) { return __awaiter(_this, void 0, void 0, function () {
-                            var groupMembership;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, this.getGroupMemberships(thread.id)];
+                            var _a;
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
+                                    case 0:
+                                        _a = thread;
+                                        return [4 /*yield*/, this.getStreamUsers(thread.id)];
                                     case 1:
-                                        groupMembership = _a.sent();
-                                        thread.groupMembers = groupMembership;
+                                        _a.streamUsers = _b.sent();
                                         thread.type = thread.name.length === 0 ? 'direct' : 'global';
                                         return [2 /*return*/, thread];
                                 }
@@ -191,7 +193,7 @@ var PostChat = /** @class */ (function () {
                     case 0: return [4 /*yield*/, this.getThreads(workspaceId, direct)];
                     case 1:
                         threads = _a.sent();
-                        return [2 /*return*/, threads.filter(function (thread) { return thread.groupMembers.find(function (value) { return value.user.id === _this.userId; }); })];
+                        return [2 /*return*/, threads.filter(function (thread) { return thread.streamUsers.find(function (value) { return value.user.id === _this.userId; }); })];
                 }
             });
         });
@@ -199,29 +201,29 @@ var PostChat = /** @class */ (function () {
     /** Fetches thread by id */
     PostChat.prototype.getThreadById = function (threadId) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, thread, groupMemberships;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.axios.get('/groups/' + threadId)];
+            var response, thread, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.axios.get('streams/' + threadId)];
                     case 1:
-                        response = _a.sent();
+                        response = _b.sent();
                         thread = response.data;
-                        return [4 /*yield*/, this.getGroupMemberships(threadId)];
+                        _a = thread;
+                        return [4 /*yield*/, this.getStreamUsers(threadId)];
                     case 2:
-                        groupMemberships = _a.sent();
-                        thread.groupMembers = groupMemberships;
+                        _a.streamUsers = _b.sent();
                         thread.type = thread.name.length === 0 ? 'direct' : 'global';
                         return [2 /*return*/, thread];
                 }
             });
         });
     };
-    PostChat.prototype.createGroup = function (ownerId, name, description, discoverable) {
+    PostChat.prototype.createStream = function (ownerId, name, description, discoverable) {
         return __awaiter(this, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.axios.post('groups', {
+                    case 0: return [4 /*yield*/, this.axios.post('streams', {
                             name: name,
                             description: description,
                             discoverable: discoverable,
@@ -241,29 +243,29 @@ var PostChat = /** @class */ (function () {
         if (description === void 0) { description = ''; }
         if (discoverable === void 0) { discoverable = true; }
         return __awaiter(this, void 0, void 0, function () {
-            var createdGroup;
+            var createdStream;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.createGroup(ownerId, name, description, discoverable)];
+                    case 0: return [4 /*yield*/, this.createStream(ownerId, name, description, discoverable)];
                     case 1:
-                        createdGroup = _a.sent();
-                        return [4 /*yield*/, this.joinGroup(createdGroup.id, this.userId)];
+                        createdStream = _a.sent();
+                        return [4 /*yield*/, this.joinStream(createdStream.id, this.userId)];
                     case 2:
                         _a.sent();
-                        return [2 /*return*/, this.getThreadById(createdGroup.id)];
+                        return [2 /*return*/, this.getThreadById(createdStream.id)];
                 }
             });
         });
     };
-    /** Fetches the event stream of a group */
-    PostChat.prototype.getEventStream = function (groupId) {
+    /** Fetches the event stream of a stream */
+    PostChat.prototype.getEventStream = function (streamId) {
         return __awaiter(this, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.axios.get('events', {
                             params: {
-                                'eventGroup.id': groupId
+                                'stream.id': streamId
                             }
                         })];
                     case 1:
@@ -273,13 +275,13 @@ var PostChat = /** @class */ (function () {
             });
         });
     };
-    /** Fetches group memberships for the specified group */
-    PostChat.prototype.getGroupMemberships = function (groupId, userId) {
+    /** Fetches stream memberships for the specified stream */
+    PostChat.prototype.getStreamUsers = function (streamId, userId) {
         return __awaiter(this, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.axios.get("groups/" + groupId + "/groupMembers", {
+                    case 0: return [4 /*yield*/, this.axios.get("streamUsers/" + streamId + "/streamUsers", {
                             params: __assign({}, userId && { 'user.id': userId })
                         })];
                     case 1:
@@ -289,21 +291,22 @@ var PostChat = /** @class */ (function () {
             });
         });
     };
-    /** Joins a group if available */
-    PostChat.prototype.joinGroup = function (groupId, userId) {
+    /** Joins a stream if available */
+    PostChat.prototype.joinStream = function (streamId, userId, pusherSubscribe) {
+        if (pusherSubscribe === void 0) { pusherSubscribe = true; }
         return __awaiter(this, void 0, void 0, function () {
             var existingMembership, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.getGroupMemberships(groupId, this.userId)];
+                    case 0: return [4 /*yield*/, this.getStreamUsers(streamId, this.userId)];
                     case 1:
                         existingMembership = (_a.sent())[0];
                         if (existingMembership) {
                             return [2 /*return*/, existingMembership];
                         }
-                        return [4 /*yield*/, this.axios.post('groupMembers', {
-                                userGroup: {
-                                    id: groupId
+                        return [4 /*yield*/, this.axios.post('streamUsers', {
+                                stream: {
+                                    id: streamId
                                 },
                                 user: {
                                     id: userId
@@ -311,27 +314,29 @@ var PostChat = /** @class */ (function () {
                             })];
                     case 2:
                         response = _a.sent();
+                        if (!pusherSubscribe) return [3 /*break*/, 4];
                         return [4 /*yield*/, this.subscribeWithPusher(response.data.id, [])];
                     case 3:
                         _a.sent();
-                        return [2 /*return*/, response.data];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, response.data];
                 }
             });
         });
     };
-    /** Leaves a group */
-    PostChat.prototype.leaveGroup = function (groupId) {
+    /** Leaves a stream */
+    PostChat.prototype.leaveStream = function (streamId) {
         return __awaiter(this, void 0, void 0, function () {
             var existingMembership, err_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 4, , 5]);
-                        return [4 /*yield*/, this.getGroupMemberships(groupId, this.userId)];
+                        return [4 /*yield*/, this.getStreamUsers(streamId, this.userId)];
                     case 1:
                         existingMembership = (_a.sent())[0];
                         if (!existingMembership) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.axios.delete('groupMembers/' + existingMembership.id)];
+                        return [4 /*yield*/, this.axios.delete('streamUsers/' + existingMembership.id)];
                     case 2:
                         _a.sent();
                         _a.label = 3;
@@ -345,14 +350,14 @@ var PostChat = /** @class */ (function () {
         });
     };
     /** Subscribes to pusher transport */
-    PostChat.prototype.subscribeWithPusher = function (groupMemberId, eventTypes) {
+    PostChat.prototype.subscribeWithPusher = function (streamUserId, eventTypes) {
         return __awaiter(this, void 0, void 0, function () {
             var existingSubscription, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.axios.get('subscriptions', {
                             params: {
-                                'groupMember.id': groupMemberId,
+                                'streamUser.id': streamUserId,
                                 transport: 'pusher'
                             }
                         })];
@@ -363,8 +368,8 @@ var PostChat = /** @class */ (function () {
                             return [2 /*return*/, existingSubscription];
                         }
                         return [4 /*yield*/, this.axios.post('subscriptions', {
-                                groupMember: {
-                                    id: groupMemberId
+                                streamUser: {
+                                    id: streamUserId
                                 },
                                 transport: 'pusher',
                                 eventTypes: eventTypes
@@ -377,14 +382,14 @@ var PostChat = /** @class */ (function () {
         });
     };
     /** Subscribes to webhook transport */
-    PostChat.prototype.subscribeWithWebhook = function (groupMemberId, webhookData, eventTypes) {
+    PostChat.prototype.subscribeWithWebhook = function (streamUserId, webhookData, eventTypes) {
         return __awaiter(this, void 0, void 0, function () {
             var existingSubscription, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.axios.get('subscriptions', {
                             params: {
-                                'groupMember.id': groupMemberId,
+                                'streamUser.id': streamUserId,
                                 transport: 'webhook'
                             }
                         })];
@@ -395,8 +400,8 @@ var PostChat = /** @class */ (function () {
                             return [2 /*return*/, existingSubscription];
                         }
                         return [4 /*yield*/, this.axios.post('subscriptions', {
-                                groupMember: {
-                                    id: groupMemberId
+                                streamUser: {
+                                    id: streamUserId
                                 },
                                 transport: 'webhook',
                                 webhookData: webhookData,
@@ -410,21 +415,21 @@ var PostChat = /** @class */ (function () {
         });
     };
     /** Subscribes to webhook transport with the specified uri */
-    PostChat.prototype.subscribeWithWebhookUri = function (groupMemberId, webhookUri, eventTypes) {
+    PostChat.prototype.subscribeWithWebhookUri = function (streamUserId, webhookUri, eventTypes) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.subscribeWithWebhook(groupMemberId, { uri: webhookUri }, eventTypes)];
+                return [2 /*return*/, this.subscribeWithWebhook(streamUserId, { uri: webhookUri }, eventTypes)];
             });
         });
     };
-    /** sends an event to the group's event stream */
-    PostChat.prototype.sendEvent = function (groupId, type, data) {
+    /** sends an event to the stream's event stream */
+    PostChat.prototype.sendEvent = function (streamId, type, data) {
         return __awaiter(this, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.axios.post('events', __assign({ eventGroup: {
-                                id: groupId
+                    case 0: return [4 /*yield*/, this.axios.post('events', __assign({ stream: {
+                                id: streamId
                             }, type: type }, data && data))];
                     case 1:
                         response = _a.sent();
@@ -433,11 +438,11 @@ var PostChat = /** @class */ (function () {
             });
         });
     };
-    /** Send a message to the specified group */
-    PostChat.prototype.sendMessage = function (groupId, text) {
+    /** Send a message to the specified stream */
+    PostChat.prototype.sendMessage = function (streamId, text) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.sendEvent(groupId, 'message', {
+                return [2 /*return*/, this.sendEvent(streamId, 'message', {
                         messageEventData: {
                             text: text
                         }
@@ -445,11 +450,12 @@ var PostChat = /** @class */ (function () {
             });
         });
     };
-    /** Send a typing indication to the specified group */
-    PostChat.prototype.sendTypingEvent = function (groupId, type) {
+    /** Send a typing indication to the specified stream */
+    /** Send a typing indication to the specified stream */
+    PostChat.prototype.sendTypingEvent = function (streamId, type) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.sendEvent(groupId, type)];
+                return [2 /*return*/, this.sendEvent(streamId, type)];
             });
         });
     };

@@ -1,9 +1,9 @@
 import { Event } from '../events/event';
 import { User } from '../user';
-import { Group } from './group';
-export interface GroupMember {
+import { Stream } from './stream';
+export interface StreamUser {
     id: string;
     user: User;
-    userGroup: Group;
+    stream: Stream;
     lastSeenEvent?: Event;
 }

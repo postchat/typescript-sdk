@@ -1,4 +1,4 @@
-import { Event, Group, GroupMember, MessageEvent, Subscription, Thread, User, Workspace } from './interfaces';
+import { Event, Stream, StreamUser, MessageEvent, Subscription, Thread, User, Workspace } from './interfaces';
 export declare class PostChat {
     private readonly axios;
     readonly userId: string;
@@ -7,37 +7,38 @@ export declare class PostChat {
     static create(username: string, password: string, isBot: boolean): Promise<PostChat>;
     /** Fetches the current user's available workspaces */
     getWorkspaces(): Promise<Workspace[]>;
-    /** Fetches child groups of the specified group */
-    getGroupChildren(groupId: string): Promise<Group[]>;
+    /** Fetches child streams of the specified stream */
+    getStreamChildren(streamId: string): Promise<Stream[]>;
     /** Fetches available threads of a workspaces */
     getThreads(workspaceId: string, direct?: boolean): Promise<Thread[]>;
     /** Fetches threads that the current user is a member of */
     getCurrentUserThreads(workspaceId: string, direct?: boolean): Promise<Thread[]>;
     /** Fetches thread by id */
     getThreadById(threadId: string): Promise<Thread>;
-    private createGroup;
+    private createStream;
     /** Creates a new thread */
     createThread(ownerId: string, name: string, description?: string, discoverable?: boolean): Promise<Thread>;
-    /** Fetches the event stream of a group */
-    getEventStream(groupId: string): Promise<Event[]>;
-    /** Fetches group memberships for the specified group */
-    getGroupMemberships(groupId: string, userId?: string): Promise<GroupMember[]>;
-    /** Joins a group if available */
-    joinGroup(groupId: string, userId: string): Promise<GroupMember>;
-    /** Leaves a group */
-    leaveGroup(groupId: string): Promise<boolean>;
+    /** Fetches the event stream of a stream */
+    getEventStream(streamId: string): Promise<Event[]>;
+    /** Fetches stream memberships for the specified stream */
+    getStreamUsers(streamId: string, userId?: string): Promise<StreamUser[]>;
+    /** Joins a stream if available */
+    joinStream(streamId: string, userId: string, pusherSubscribe?: boolean): Promise<StreamUser>;
+    /** Leaves a stream */
+    leaveStream(streamId: string): Promise<boolean>;
     /** Subscribes to pusher transport */
-    subscribeWithPusher(groupMemberId: string, eventTypes?: string[]): Promise<Subscription>;
+    subscribeWithPusher(streamUserId: string, eventTypes?: string[]): Promise<Subscription>;
     /** Subscribes to webhook transport */
     private subscribeWithWebhook;
     /** Subscribes to webhook transport with the specified uri */
-    subscribeWithWebhookUri(groupMemberId: string, webhookUri: string, eventTypes?: string[]): Promise<Subscription>;
-    /** sends an event to the group's event stream */
-    sendEvent<T = any>(groupId: string, type: string, data?: any): Promise<T>;
-    /** Send a message to the specified group */
-    sendMessage(groupId: string, text: string): Promise<MessageEvent>;
-    /** Send a typing indication to the specified group */
-    sendTypingEvent(groupId: string, type: 'typing-start' | 'typing-stop'): Promise<any>;
+    subscribeWithWebhookUri(streamUserId: string, webhookUri: string, eventTypes?: string[]): Promise<Subscription>;
+    /** sends an event to the stream's event stream */
+    sendEvent<T = any>(streamId: string, type: string, data?: any): Promise<T>;
+    /** Send a message to the specified stream */
+    sendMessage(streamId: string, text: string): Promise<MessageEvent>;
+    /** Send a typing indication to the specified stream */
+    /** Send a typing indication to the specified stream */
+    sendTypingEvent(streamId: string, type: 'typing-start' | 'typing-stop'): Promise<any>;
     /** Fetches user information based on the user id */
     getUserInfo(userId: string): Promise<User>;
     /** Fetches users available to the current user */

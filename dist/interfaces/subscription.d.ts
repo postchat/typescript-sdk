@@ -1,9 +1,9 @@
-import { GroupMember } from './groups/groupMember';
+import { StreamUser } from './streams/streamUser';
 import { WebhookData } from './webhookData';
 export interface Subscription {
     transport: string;
     eventTypes?: string[];
-    groupMember?: GroupMember;
+    streamUser?: StreamUser;
     webhookData?: WebhookData;
     id?: string;
 }
