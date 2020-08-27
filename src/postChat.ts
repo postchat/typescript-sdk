@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken';
 
 import {
   Event,
+  MessageEvent,
   Stream,
   StreamUser,
-  MessageEvent,
   Subscription,
   Thread,
   User,
@@ -191,7 +191,7 @@ export class PostChat {
       }
     });
 
-    if(pusherSubscribe) {
+    if (pusherSubscribe) {
       await this.subscribeWithPusher(response.data.id, []);
     }
     return response.data;
