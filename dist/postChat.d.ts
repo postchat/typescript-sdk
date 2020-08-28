@@ -1,4 +1,4 @@
-import { Event, Stream, StreamUser, MessageEvent, Subscription, Thread, User, Workspace } from './interfaces';
+import { Event, MessageEvent, Stream, StreamUser, Subscription, Thread, User, Workspace } from './interfaces';
 export declare class PostChat {
     private readonly axios;
     readonly userId: string;

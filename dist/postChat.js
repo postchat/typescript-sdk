@@ -281,7 +281,7 @@ var PostChat = /** @class */ (function () {
             var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.axios.get("streamUsers/" + streamId + "/streamUsers", {
+                    case 0: return [4 /*yield*/, this.axios.get("stream/" + streamId + "/streamUsers", {
                             params: __assign({}, userId && { 'user.id': userId })
                         })];
                     case 1:
