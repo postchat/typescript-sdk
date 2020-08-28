@@ -166,7 +166,7 @@ export class PostChat {
 
   /** Fetches stream memberships for the specified stream */
   public async getStreamUsers(streamId: string, userId?: string): Promise<StreamUser[]> {
-    const response = await this.axios.get<StreamUser[]>(`stream/${streamId}/streamUsers`, {
+    const response = await this.axios.get<StreamUser[]>(`streams/${streamId}/streamUsers`, {
       params: {
         ...userId && { 'user.id': userId }
       }
