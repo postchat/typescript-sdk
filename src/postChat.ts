@@ -1,6 +1,6 @@
 import { Client, Stream, StreamUser, Subscription } from './api/client';
 
-type StreamWithStreamUsers = [Stream, StreamUser[]];
+export type StreamWithStreamUsers = [Stream, StreamUser[]];
 /**
  * A messaging client focused interface on the postchat api.
  */
