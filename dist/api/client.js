@@ -194,7 +194,7 @@ var Client = /** @class */ (function () {
         });
     };
     Client.prototype.createInvite = function (streamId, expiration) {
-        if (expiration === void 0) { expiration = new Date("tomorrow"); }
+        if (expiration === void 0) { expiration = new Date('tomorrow'); }
         return __awaiter(this, void 0, void 0, function () {
             var response;
             return __generator(this, function (_a) {

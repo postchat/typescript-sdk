@@ -186,15 +186,14 @@ var PostChat = /** @class */ (function () {
             var existingSubscription;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.client.getSubscriptions(streamUserId, "pusher")];
+                    case 0: return [4 /*yield*/, this.client.getSubscriptions(streamUserId, 'pusher')];
                     case 1:
                         existingSubscription = (_a.sent())[0];
                         if (existingSubscription) {
                             // TODO: Patch existing types?
                             return [2 /*return*/, existingSubscription];
                         }
-                        return [4 /*yield*/, this.client.createSubscription(streamUserId, 'pusher', eventTypes)];
-                    case 2: return [2 /*return*/, _a.sent()];
+                        return [2 /*return*/, this.client.createSubscription(streamUserId, 'pusher', eventTypes)];
                 }
             });
         });
@@ -205,15 +204,14 @@ var PostChat = /** @class */ (function () {
             var existingSubscription;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.client.getSubscriptions(streamUserId, "webhhok")];
+                    case 0: return [4 /*yield*/, this.client.getSubscriptions(streamUserId, 'webhhok')];
                     case 1:
                         existingSubscription = (_a.sent())[0];
                         if (existingSubscription) {
                             // TODO: Patch existing types/data?
                             return [2 /*return*/, existingSubscription];
                         }
-                        return [4 /*yield*/, this.client.createWebhookSubscription(streamUserId, webhookUri, eventTypes)];
-                    case 2: return [2 /*return*/, _a.sent()];
+                        return [2 /*return*/, this.client.createWebhookSubscription(streamUserId, webhookUri, eventTypes)];
                 }
             });
         });

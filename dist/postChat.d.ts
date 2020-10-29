@@ -1,5 +1,5 @@
-import { Client, Stream, StreamUser, Subscription } from "./api/client";
-declare type StreamWithStreamUsers = [Stream, StreamUser[]];
+import { Client, Stream, StreamUser, Subscription } from './api/client';
+export declare type StreamWithStreamUsers = [Stream, StreamUser[]];
 /**
  * A messaging client focused interface on the postchat api.
  */
@@ -23,4 +23,3 @@ export declare class PostChat {
     /** Subscribes to webhook transport */
     subscribeWithWebhook(streamUserId: string, webhookUri: string, eventTypes?: string[]): Promise<Subscription>;
 }
-export {};
