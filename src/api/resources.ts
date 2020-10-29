@@ -33,9 +33,9 @@ interface CommandEventData {
 }
 
 export enum EventTypes {
-    MESSAGE      = "message",
-    TYPING_START = "typing-start",
-    TYPING_STOP  = "typing-stop"
+    MESSAGE      = 'message',
+    TYPING_START = 'typing-start',
+    TYPING_STOP  = 'typing-stop'
 }
 
 export interface Event {
@@ -61,7 +61,7 @@ export interface Subscription {
 }
 
 export interface Invite {
-    id: string
+    id: string;
     stream: Pick<Stream, 'id'>;
     expiration: Date;
     invitedStreamUser?: StreamUser;

@@ -1,4 +1,4 @@
-import {Client, Stream, StreamUser, Subscription} from "./api/client";
+import { Client, Stream, StreamUser, Subscription } from './api/client';
 
 type StreamWithStreamUsers = [Stream, StreamUser[]];
 /**
@@ -79,14 +79,14 @@ export class PostChat {
 
   /** Subscribes to pusher transport */
   public async subscribeWithPusher(streamUserId: string, eventTypes?: string[]): Promise<Subscription> {
-    const [existingSubscription] = await this.client.getSubscriptions(streamUserId, "pusher");
+    const [existingSubscription] = await this.client.getSubscriptions(streamUserId, 'pusher');
 
     if (existingSubscription) {
       // TODO: Patch existing types?
       return existingSubscription;
     }
 
-    return await this.client.createSubscription(streamUserId, 'pusher', eventTypes);
+    return this.client.createSubscription(streamUserId, 'pusher', eventTypes);
   }
 
   /** Subscribes to webhook transport */
@@ -95,13 +95,13 @@ export class PostChat {
     webhookUri: string,
     eventTypes?: string[]
   ): Promise<Subscription> {
-    const [existingSubscription]: Subscription[] = await this.client.getSubscriptions(streamUserId, "webhhok");
+    const [existingSubscription]: Subscription[] = await this.client.getSubscriptions(streamUserId, 'webhhok');
 
     if (existingSubscription) {
       // TODO: Patch existing types/data?
       return existingSubscription;
     }
 
-    return await this.client.createWebhookSubscription(streamUserId, webhookUri, eventTypes);
+    return this.client.createWebhookSubscription(streamUserId, webhookUri, eventTypes);
   }
 }

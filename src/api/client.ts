@@ -1,8 +1,8 @@
 import { AuthenticationClient } from 'auth0';
-import Axios, {AxiosInstance} from 'axios';
+import Axios, { AxiosInstance } from 'axios';
 import jwt from 'jsonwebtoken';
 
-import {Event, EventTypes, Invite, Stream, StreamUser, Subscription, User} from './resources';
+import { Event, EventTypes, Invite, Stream, StreamUser, Subscription, User } from './resources';
 
 export * from './crypto';
 export * from './resources';
@@ -80,7 +80,7 @@ export class Client {
   public async getStream(streamId: string): Promise<Stream> {
     const response = await this.axios.get(`streams/${streamId}`);
 
-    return response.data
+    return response.data;
   }
 
   public async createStream(
@@ -113,7 +113,7 @@ export class Client {
 
   public async createInvite(
       streamId: string,
-      expiration: Date = new Date("tomorrow")
+      expiration: Date = new Date('tomorrow')
   ): Promise<Invite> {
     const response = await this.axios.post<Invite>('invites', {
       stream: {
