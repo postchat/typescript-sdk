@@ -23,3 +23,4 @@ export declare class PostChat {
     /** Subscribes to webhook transport */
     subscribeWithWebhook(streamUserId: string, webhookUri: string, eventTypes?: string[]): Promise<Subscription>;
 }
+export declare function isStreamDirect(stream: Stream): boolean;

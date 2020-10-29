@@ -8,6 +8,7 @@ export interface User {
 export interface Stream {
     id: string;
     name: string;
+    direct: () => boolean;
     description: string;
     discoverable: boolean;
     private: boolean;

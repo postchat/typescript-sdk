@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PostChat = void 0;
+exports.isStreamDirect = exports.PostChat = void 0;
 var client_1 = require("./api/client");
 /**
  * A messaging client focused interface on the postchat api.
@@ -219,4 +219,8 @@ var PostChat = /** @class */ (function () {
     return PostChat;
 }());
 exports.PostChat = PostChat;
+function isStreamDirect(stream) {
+    return stream.name.length === 0;
+}
+exports.isStreamDirect = isStreamDirect;
 //# sourceMappingURL=postChat.js.map
