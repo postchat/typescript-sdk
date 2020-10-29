@@ -105,3 +105,7 @@ export class PostChat {
     return this.client.createWebhookSubscription(streamUserId, webhookUri, eventTypes);
   }
 }
+
+export function isStreamDirect(stream: Stream): boolean {
+  return stream.name.length === 0;
+}
